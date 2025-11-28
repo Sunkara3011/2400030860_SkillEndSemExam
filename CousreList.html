@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Course List Application</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        ul { list-style-type: none; padding: 0; width: 250px; }
+        li {
+            padding: 10px;
+            margin-bottom: 8px;
+            background-color: #e0e0e0;
+            border: 1px solid #999;
+            cursor: grab;
+        }
+ li.dragging {
+            opacity: 0.4;
+        }
+        #output {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h2> Simple Course List Application </h2>
+<p>Drag and drop the courses to rearrange them:</p>
+
+<ul id="courseList">
+    <li draggable="true">Data Structures</li>
+    <li draggable="true">Operating Systems</li>
+    <li draggable="true">Computer Networks</li>
+    <li draggable="true">Database Management Systems</li>
+    <li draggable="true">Artificial Intelligence</li>
+</ul>
+
+<button onclick="showOrder()">Show Updated Order</button>
+
+<p id="output"></p>
+
+<script>
+    const list = document.getElementById("courseList");
+
+    let draggedItem = null;
+
+    list.addEventListener("dragstart", e => {
+        draggedItem = e.target;
+        e.target.classList.add("dragging");
+    });
+
+    list.addEventListener("dragend", e => {
+        e.target.classList.remove("dragging");
+    });
+
+    list.addEventListener("dragover", e => {
+        e.preventDefault();
+        let target = e.target;
+        if (target.tagName === "LI" && target !== draggedItem) {
+            let items = [...list.querySelectorAll("li")];
+            let draggedIndex = items.indexOf(draggedItem);
+            let targetIndex = items.indexOf(target);
+
+            if (draggedIndex < targetIndex) {
+                target.after(draggedItem);
+            } else {
+                target.before(draggedItem);
+            }
+        }
+    });
+
+    function showOrder() {
+        let items = [...document.querySelectorAll("#courseList li")];
+        let order = items.map(item => item.textContent);
+        document.getElementById("output").innerText = 
+            "Updated Order: " + order.join(", ");
+    }
+</script>
+
+</body>
+</html>
